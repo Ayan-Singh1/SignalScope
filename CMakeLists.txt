@@ -19,7 +19,8 @@ include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
 
 # Create the executable named SignalScope
-add_executable(SignalScope ${SOURCES})
+add_executable(SignalScope ${SOURCES}
+    include/Tower.h)
 
 # (OPTIONAL FOR LATER): Link SFML to the executable
 # target_link_libraries(SignalScope sfml-graphics sfml-window sfml-system)
