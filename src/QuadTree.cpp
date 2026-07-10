@@ -84,12 +84,68 @@ bool QuadTree::insert(const CellNode& node) {
         nodes.clear();
 
         for(const CellNode& oldNode : oldNodes) {
-            insert(oldNode);
+            insert(oldNode); // Once the parent splits, old points move down into correct child quadrants
         }
     }
     if(northeast->insert(node)) return true;
     if(northwest->insert(node)) return true;
     if(southwest->insert(node)) return true;
     if(southeast->insert(node)) return true;
+}
 
+// Nearest Neighbor helper functions
+double distanceSquared(double lat1, double lon1, double lat2, double lon2) { // Used to compare closest nodes
+    double dLat = lat1 - lat2;
+    double dLon = lon1 - lon2;
+    return dLat * dLat + dLon * dLon;
+}
+
+double Boundary::distanceSquaredTo(double lat, double lon) const { // Decide whether quadrant is worth searching (avoids brute force approach)
+    double x = lon;
+    double y = lat;
+
+    double closestX = x;
+    double closestY = y;
+
+    if(x < minX) closestX = minX;
+    else if (x > maxX) closestX = maxX;
+
+    if(y < minY) closestY = minY;
+    else if (y > maxY) closestY = maxY;
+
+    double dx = x - closestX;
+    double dy = y - closestY;
+
+    return dx * dx + dy * dy;
+}
+
+void QuadTree::nearestNeighborHelper(double lat, double lon, CellNode*& best, double& bestDistance) {
+    // If entire region is farther than best node, skip it
+    if(boundary.distanceSquaredTo(lat, lon) > bestDistance) {
+        return;
+    }
+
+    // Check nodes store in region
+    for(CellNode& node : nodes) {
+        double dist = distanceSquared(lat, lon, node.lat, node.lon);
+        if(dist < bestDistance) {
+            bestDistance = dist; // New best distance
+            best = &node; // New best node
+        }
+    }
+
+    if(divided) { // If region has children, search them as well
+        northeast->nearestNeighborHelper(lat, lon, best, bestDistance);
+        northwest->nearestNeighborHelper(lat, lon, best, bestDistance);
+        southwest->nearestNeighborHelper(lat, lon, best, bestDistance);
+        southeast->nearestNeighborHelper(lat, lon, best, bestDistance);
+    }
+}
+
+CellNode* QuadTree::nearestNeighbor(double lat, double lon) {
+    CellNode* best = nullptr;
+    double bestDistance = 999999999.0; // Any real distance calculated will  be smaller (for testing)
+
+    nearestNeighborHelper(lat, lon, best, bestDistance);
+    return best;
 }
