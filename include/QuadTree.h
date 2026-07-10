@@ -13,6 +13,9 @@ struct Boundary {
     bool contains(const CellNode& node) const;
     double midX() const; // Middle longitude of total boundary
     double midY() const; //Middle latitude of total boundary
+
+    double distanceSquared(double lat1, double lon1, double lat2, double lon2);
+    double distanceSquaredTo(double lat, double lon) const;
 };
 
 class QuadTree {
@@ -36,6 +39,7 @@ public:
 
     bool insert(const CellNode& node);
 
+  
     CellNode* nearestNeighbor(double lat, double lon);
 
     void printBFS() const;
