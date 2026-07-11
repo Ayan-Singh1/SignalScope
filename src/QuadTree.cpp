@@ -91,6 +91,8 @@ bool QuadTree::insert(const CellNode& node) {
     if(northwest->insert(node)) return true;
     if(southwest->insert(node)) return true;
     if(southeast->insert(node)) return true;
+
+    return false;
 }
 
 // Nearest Neighbor helper functions
