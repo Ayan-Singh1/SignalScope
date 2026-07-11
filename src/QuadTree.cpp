@@ -73,24 +73,44 @@ bool QuadTree::insert(const CellNode& node) {
         return false;
     }
 
-    if(!divided && nodes.size() < capacity) { // Region has space and is not divided, store node here
+    if(!divided && nodes.size() < capacity) { 
         nodes.push_back(node);
         return true;
     }
 
     if(!divided) {
+        // --- ADD THIS SECURITY CHECK TO PREVENT INFINITE LOOPS ---
+        // If all existing nodes have the exact same coordinate as the new node,
+        // subdividing won't separate them. Just store it here instead!
+        bool allDuplicates = true;
+        for (const auto& existingNode : nodes) {
+            if (existingNode.lat != node.lat || existingNode.lon != node.lon) {
+                allDuplicates = false;
+                break;
+            }
+        }
+        
+        if (allDuplicates) {
+            nodes.push_back(node);
+            return true;
+        }
+        // --------------------------------------------------------
+
         subDivide();
         vector<CellNode> oldNodes = nodes;
         nodes.clear();
 
         for(const CellNode& oldNode : oldNodes) {
-            insert(oldNode); // Once the parent splits, old points move down into correct child quadrants
+            insert(oldNode); 
         }
     }
+    
     if(northeast->insert(node)) return true;
     if(northwest->insert(node)) return true;
     if(southwest->insert(node)) return true;
     if(southeast->insert(node)) return true;
+
+    return false; // Safely catches any misses
 }
 
 // Nearest Neighbor helper functions
