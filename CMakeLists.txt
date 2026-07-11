@@ -24,3 +24,13 @@ add_executable(SignalScope ${SOURCES}
 
 # (OPTIONAL FOR LATER): Link SFML to the executable
 # target_link_libraries(SignalScope sfml-graphics sfml-window sfml-system)
+
+# -----------------------------------------------------------------------
+# Standalone test target for the KD-Tree + RF math (Hitesh).
+# Builds ONLY the KD-Tree, math, and its test main -- no SFML/ImGui.
+# Build just this:  cmake --build . --target kdtree_test
+# -----------------------------------------------------------------------
+add_executable(kdtree_test
+    tests/kdtree_test.cpp
+    src/KDTree.cpp
+    src/MathUtils.cpp)
