@@ -32,6 +32,6 @@ build/
 .vscode/
 .idea/
 
-# Ignore raw OpenCelliD dataset files
+# OpenCelliD dataset files
 resources/data/raw/*.csv
 SFML/

@@ -5,31 +5,30 @@
 #include <string>
 using namespace std;
 
-// Estimate of Florida bounding box
+// est of Florida bounding box
 const double FL_MIN_LAT = 24.0;
 const double FL_MAX_LAT = 31.1;
 const double FL_MIN_LON = -87.8;
 const double FL_MAX_LON = -79.8;
 
-// Estimate of Georgia bounding box
+// est of Georgia bounding box
 const double GA_MIN_LAT = 30.3;
 const double GA_MAX_LAT = 35.1;
 const double GA_MIN_LON = -85.7;
 const double GA_MAX_LON = -80.8;
 
-// Estimate of Alabama bounding box
+// est of Alabama bounding box
 const double AL_MIN_LAT = 30.1;
 const double AL_MAX_LAT = 35.1;
 const double AL_MIN_LON = -88.5;
 const double AL_MAX_LON = -84.9;
 
-// Estimate of South Carolina bounding box
+// est of South Carolina bounding box
 const double SC_MIN_LAT = 32.0;
 const double SC_MAX_LAT = 35.3;
 const double SC_MIN_LON = -83.4;
 const double SC_MAX_LON = -78.5;
 
-// Split CSV line by commas
 vector<string> splitCSVLine(const string& line) {
     vector<string> fields;
     string field;
@@ -41,31 +40,25 @@ vector<string> splitCSVLine(const string& line) {
     return fields;
 }
 
-// Check whether a coordinate is inside FLorida's rough bounds
 bool isInFlorida(double lat, double lon) {
     return (lat >= FL_MIN_LAT && lat <= FL_MAX_LAT && lon >= FL_MIN_LON && lon <= FL_MAX_LON);
 }
-
-// Check whether a coordinate is inside Georgia's rough bounds
 bool isInGeorgia(double lat, double lon) {
     return (lat >= GA_MIN_LAT && lat <= GA_MAX_LAT && lon >= GA_MIN_LON && lon <= GA_MAX_LON);
 }
 
-// Check whether a coordinate is inside Alabama's rough bounds
 bool isInAlabama(double lat, double lon) {
     return (lat >= AL_MIN_LAT && lat <= AL_MAX_LAT && lon >= AL_MIN_LON && lon <= AL_MAX_LON);
 }
 
-// Check whether a coordinate is inside South Carolina's rough bounds
 bool isInSouthCarolina(double lat, double lon) {
     return (lat >= SC_MIN_LAT && lat <= SC_MAX_LAT && lon >= SC_MIN_LON && lon <= SC_MAX_LON);
 }
 
-// Read one CSV file and write Florida rows to the output
 void filterFile(const string& inputPath, ofstream& floridaFile, ofstream& georgiaFile, ofstream& alabamaFile, ofstream& southCarolinaFile) {
     ifstream inputFile(inputPath);
 
-    if(!inputFile.is_open()) { // Check if file failed to open
+    if(!inputFile.is_open()) { 
         std::cout << "Could not open: " << inputPath << std::endl;
         return;
     }
@@ -78,35 +71,35 @@ void filterFile(const string& inputPath, ofstream& floridaFile, ofstream& georgi
     int alabamaRows = 0;
     int southCarolinaRows = 0;
 
-    while(getline(inputFile, line)) { // Read one full CSV row and store it
-        vector<string> fields = splitCSVLine(line); // Split row into individual columns
+    while(getline(inputFile, line)) { 
+        vector<string> fields = splitCSVLine(line);
 
         if(fields.size() < 8) {
             continue;
         }
 
         try {
-            double lon = stod(fields[6]); // OpenCelliD longitude col
-            double lat = stod(fields[7]); // OpenCelliD latitude col
+            double lon = stod(fields[6]); 
+            double lat = stod(fields[7]); 
             totalRows++;
 
             if(isInFlorida(lat, lon)) {
-                floridaFile << line << '\n'; // Florida row written to output CSV
+                floridaFile << line << '\n';
                 floridaRows++;
              }
 
              if(isInGeorgia(lat, lon)) {
-                georgiaFile << line << '\n'; // Georgia row written to ouput CSV
+                georgiaFile << line << '\n';
                 georgiaRows++;
              }
 
              if(isInAlabama(lat, lon)) {
-                alabamaFile << line << '\n'; // Alabama row written to ouput CSV
+                alabamaFile << line << '\n'; 
                 alabamaRows++;
              }
 
              if(isInSouthCarolina(lat, lon)) {
-                southCarolinaFile << line << '\n'; // South Carolina row written to ouput CSV
+                southCarolinaFile << line << '\n'; 
                 southCarolinaRows++;
              }
 
@@ -142,10 +135,10 @@ int main() {
         "resources/data/raw/314.csv",
     };
 
-    ofstream floridaFile("resources/data/processed/florida_cell_nodes.csv"); // Write cleaned Florida CSV file
-    ofstream georgiaFile("resources/data/processed/georgia_cell_nodes.csv"); // Write cleaned Georgia CSV file
-    ofstream alabamaFile("resources/data/processed/alabama_cell_nodes.csv"); // Write cleaned Alabama CSV file
-    ofstream southCarolinaFile("resources/data/processed/southcarolina_cell_nodes.csv"); // Write cleaned South Carolina CSV file
+    ofstream floridaFile("resources/data/processed/florida_cell_nodes.csv"); 
+    ofstream georgiaFile("resources/data/processed/georgia_cell_nodes.csv"); 
+    ofstream alabamaFile("resources/data/processed/alabama_cell_nodes.csv"); 
+    ofstream southCarolinaFile("resources/data/processed/southcarolina_cell_nodes.csv");
 
 
     if(!floridaFile.is_open()) {
@@ -165,7 +158,7 @@ int main() {
         return 1;
     }
 
-    string header = "radio,mcc,net,area,cell,unit,lon,lat,range,samples,changeable,created,updated,averageSignal\n"; // Header row
+    string header = "radio,mcc,net,area,cell,unit,lon,lat,range,samples,changeable,created,updated,averageSignal\n"; 
 
     floridaFile << header;
     georgiaFile << header;
@@ -173,7 +166,7 @@ int main() {
     southCarolinaFile << header;
 
     for(const string& inputPath : inputFiles) {
-        filterFile(inputPath, floridaFile, georgiaFile, alabamaFile, southCarolinaFile); // Filter through each raw MCC CSV file and write Florida rows
+        filterFile(inputPath, floridaFile, georgiaFile, alabamaFile, southCarolinaFile);
     }
     floridaFile.close();
     georgiaFile.close();

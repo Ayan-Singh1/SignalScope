@@ -1,6 +1,6 @@
 #include "KDTree.h"
 #include "MathUtils.h"
-#include <cfloat>   // DBL_MAX
+#include <cfloat> 
 
 KDTree::KDTree() : root(nullptr) {}
 
@@ -8,7 +8,7 @@ KDTree::~KDTree() {
     destroyRec(root);
 }
 
-// Post-order traversal freeing every node.
+// post-order traversal freeing every node
 void KDTree::destroyRec(KDNode* node) {
     if (node == nullptr) return;
     destroyRec(node->left);
@@ -20,8 +20,7 @@ void KDTree::insert(const CellNode& node) {
     insertRec(root, node, 0);
 }
 
-// Recursive insert. Alternates axis by depth:
-// even depth -> compare latitude, odd depth -> compare longitude.
+// recursive insert
 void KDTree::insertRec(KDNode*& node, const CellNode& cell, int depth) {
     if (node == nullptr) {
         node = new KDNode(cell);
@@ -47,9 +46,7 @@ CellNode* KDTree::nearestNeighbor(double lat, double lon) {
     return best;
 }
 
-// Recursive nearest-neighbor with pruning: search the near side of the
-// split first, then only cross to the far side if the splitting plane is
-// closer than our best-so-far (meaning a closer point could still be there).
+// recursive nearest-neighbor with pruning
 void KDTree::nearestRec(KDNode* node, double lat, double lon, int depth,
                         CellNode*& best, double& bestDist) const {
     if (node == nullptr) return;
