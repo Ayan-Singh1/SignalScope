@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22) # Modern CMake version for SFML 3+
+cmake_minimum_required(VERSION 3.22)
 project(SignalScope)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -7,12 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Disable deprecation warnings from external dependencies to keep output clean
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
-# 1. Automate SFML 3.1.0 Download and Compiling
 include(FetchContent)
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG        3.1.0 
+    GIT_TAG        2.6.1
 )
 
 # Skip building SFML's optional examples and docs to speed up compile time
@@ -33,5 +32,5 @@ add_executable(SignalScope ${SOURCES})
 # 3. Include your local header files folder
 target_include_directories(SignalScope PRIVATE include)
 
-# 4. Link SFML targets (Note: SFML 3 targets use a clean namespace style)
-target_link_libraries(SignalScope PRIVATE SFML::Graphics SFML::Window SFML::System)
+# 4. Link SFML targets (FIXED: Using the correct SFML 2 target names)
+target_link_libraries(SignalScope PRIVATE sfml-graphics sfml-window sfml-system)

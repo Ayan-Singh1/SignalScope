@@ -34,3 +34,4 @@ build/
 
 # Ignore raw OpenCelliD dataset files
 resources/data/raw/*.csv
+SFML/
