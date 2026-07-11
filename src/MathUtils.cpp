@@ -10,7 +10,7 @@ namespace {
     }
 }
 
-// Haversine formula: distance over Earth's surface accounting for curvature.
+// haversine formula: accounting for curvature.
 double MathUtils::haversineDistance(double lat1, double lon1,
                                     double lat2, double lon2) {
     double dLat = toRadians(lat2 - lat1);
@@ -24,11 +24,10 @@ double MathUtils::haversineDistance(double lat1, double lon1,
     return EARTH_RADIUS_KM * c;
 }
 
-// Free-Space Path Loss model: how much signal weakens over distance.
+// Free-Space Path Loss model: (signal weakens over distance)
 double MathUtils::estimateSignalStrength(double distanceKm,
                                          double freqMHz,
                                          double txPowerDbm) {
-    // Guard log10(0) when the tower sits on the query point. Clamp to ~1 m.
     if (distanceKm < 0.001) {
         distanceKm = 0.001;
     }

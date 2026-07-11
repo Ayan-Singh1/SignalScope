@@ -3,9 +3,9 @@
 using namespace std;
 
 struct CellNode {
-    string cellID; // Unique node identifier from dataset
-    string radioType; // LTE, 5G, GSM, etc.
-    double lat; // Latitude (X-Cord)
-    double lon; // Longitude (Y-Cord)
+    string cellID; // unique node identifier from dataset
+    string radioType; // LTE, 5G, GSM, etc
+    double lat; // lat (X-Cord)
+    double lon; // long (Y-Cord)
     double signalStrength = 0.0;
 };

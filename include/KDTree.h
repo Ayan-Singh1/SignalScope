@@ -1,7 +1,5 @@
 #pragma once
 #include "CellNode.h"
-
-// One node in the KD-Tree: wraps a CellNode plus left/right children.
 struct KDNode {
     CellNode data;
     KDNode* left;
@@ -11,9 +9,7 @@ struct KDNode {
         : data(node), left(nullptr), right(nullptr) {}
 };
 
-// 2D KD-Tree over (latitude, longitude). Split axis alternates by depth:
-// even depth splits on latitude, odd depth splits on longitude.
-// Mirrors QuadTree's interface so the two trees are drop-in swappable.
+// 2D KD-Tree over (latitude, longitude) - split axis alternates by depth
 class KDTree {
 private:
     KDNode* root;

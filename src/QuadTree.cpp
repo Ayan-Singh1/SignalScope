@@ -7,7 +7,7 @@ using namespace std;
 bool Boundary::contains(const CellNode& node) const {
     double x = node.lon;
     double y = node.lat;
-    if((x >= minX && x < maxX) && (y >= minY && y < maxY)) { // Check if x, y cords are inside this boundary
+    if((x >= minX && x < maxX) && (y >= minY && y < maxY)) { // check if (x,y) cords are inside this boundary
         return true;
     } else {
         return false;
@@ -43,19 +43,19 @@ void QuadTree::subDivide() {
     double midX = boundary.midX();
     double midY = boundary.midY();
 
-    Boundary neBoundary { // New NE Boundary
-        midX, boundary.maxX, // Left->Right
-        midY, boundary.maxY // Bottom->Top
+    Boundary neBoundary { 
+        midX, boundary.maxX, 
+        midY, boundary.maxY
     };
-    Boundary nwBoundary { // New NW Boundary
+    Boundary nwBoundary { 
         boundary.minX, midX,
         midY, boundary.maxY
     };
-    Boundary swBoundary { // New SW Boundary
+    Boundary swBoundary { 
         boundary.minX, midX,
         boundary.minY, midY
     };
-    Boundary seBoundary { // New SE Boundary
+    Boundary seBoundary { 
         midX, boundary.maxX,
         boundary.minY, midY
     };
@@ -65,7 +65,7 @@ void QuadTree::subDivide() {
     southwest = new QuadTree(swBoundary, capacity);
     southeast = new QuadTree(seBoundary, capacity);
 
-    divided = true; // Updated QuadTree divided
+    divided = true;
 }
 
 bool QuadTree::insert(const CellNode& node) {
@@ -79,9 +79,6 @@ bool QuadTree::insert(const CellNode& node) {
     }
 
     if(!divided) {
-        // --- ADD THIS SECURITY CHECK TO PREVENT INFINITE LOOPS ---
-        // If all existing nodes have the exact same coordinate as the new node,
-        // subdividing won't separate them. Just store it here instead!
         bool allDuplicates = true;
         for (const auto& existingNode : nodes) {
             if (existingNode.lat != node.lat || existingNode.lon != node.lon) {
@@ -94,7 +91,6 @@ bool QuadTree::insert(const CellNode& node) {
             nodes.push_back(node);
             return true;
         }
-        // --------------------------------------------------------
 
         subDivide();
         vector<CellNode> oldNodes = nodes;
@@ -110,17 +106,17 @@ bool QuadTree::insert(const CellNode& node) {
     if(southwest->insert(node)) return true;
     if(southeast->insert(node)) return true;
 
-    return false; // Safely catches any misses
+    return false;
 }
 
-// Nearest Neighbor helper functions
-double distanceSquared(double lat1, double lon1, double lat2, double lon2) { // Used to compare closest nodes
+// nearest neighbor helper functions
+double distanceSquared(double lat1, double lon1, double lat2, double lon2) { // used to compare closest nodes
     double dLat = lat1 - lat2;
     double dLon = lon1 - lon2;
     return dLat * dLat + dLon * dLon;
 }
 
-double Boundary::distanceSquaredTo(double lat, double lon) const { // Decide whether quadrant is worth searching (avoids brute force approach)
+double Boundary::distanceSquaredTo(double lat, double lon) const { 
     double x = lon;
     double y = lat;
 
@@ -140,21 +136,19 @@ double Boundary::distanceSquaredTo(double lat, double lon) const { // Decide whe
 }
 
 void QuadTree::nearestNeighborHelper(double lat, double lon, CellNode*& best, double& bestDistance) {
-    // If entire region is farther than best node, skip it
     if(boundary.distanceSquaredTo(lat, lon) > bestDistance) {
         return;
     }
 
-    // Check nodes store in region
     for(CellNode& node : nodes) {
         double dist = distanceSquared(lat, lon, node.lat, node.lon);
         if(dist < bestDistance) {
-            bestDistance = dist; // New best distance
-            best = &node; // New best node
+            bestDistance = dist;
+            best = &node;
         }
     }
 
-    if(divided) { // If region has children, search them as well
+    if(divided) { 
         northeast->nearestNeighborHelper(lat, lon, best, bestDistance);
         northwest->nearestNeighborHelper(lat, lon, best, bestDistance);
         southwest->nearestNeighborHelper(lat, lon, best, bestDistance);
@@ -164,7 +158,7 @@ void QuadTree::nearestNeighborHelper(double lat, double lon, CellNode*& best, do
 
 CellNode* QuadTree::nearestNeighbor(double lat, double lon) {
     CellNode* best = nullptr;
-    double bestDistance = 999999999.0; // Any real distance calculated will  be smaller (for testing)
+    double bestDistance = 999999999.0; // real distance calculated will  be smaller (for testing)
 
     nearestNeighborHelper(lat, lon, best, bestDistance);
     return best;

@@ -3,11 +3,9 @@
 #include "CellNode.h"
 #include "KDTree.h"
 #include "MathUtils.h"
-
 using namespace std;
 
-// Standalone test for the KD-Tree + RF math using a few hand-built
-// Florida "towers". Builds only KDTree.cpp + MathUtils.cpp -- no graphics.
+// test for the KD-Tree + RF math using a random hand-built (prior to UI)
 int main() {
     vector<CellNode> towers = {
         {"miami",        "LTE", 25.7617, -80.1918},
