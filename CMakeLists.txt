@@ -1,36 +1,37 @@
-cmake_minimum_required(VERSION 3.10)
-
-# Project Name
+cmake_minimum_required(VERSION 3.22) # Modern CMake version for SFML 3+
 project(SignalScope)
 
-# Use C++ 17 standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Include the headers from the "include" folder
-include_directories(include)
+# Disable deprecation warnings from external dependencies to keep output clean
+set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
-# (OPTIONAL FOR LATER): Find SFML package 
-# We commented this out for Day 1 so your team can compile basic C++ 
-# even if they haven't installed SFML on their computers yet.
-# find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+# 1. Automate SFML 3.1.0 Download and Compiling
+include(FetchContent)
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG        3.1.0 
+)
 
-# Add all .cpp files in the src folder to the executable
-file(GLOB SOURCES "src/*.cpp")
+# Skip building SFML's optional examples and docs to speed up compile time
+set(SFML_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+set(SFML_BUILD_DOC OFF CACHE INTERNAL "")
 
-# Create the executable named SignalScope
-add_executable(SignalScope ${SOURCES}
-    include/Tower.h)
+FetchContent_MakeAvailable(SFML)
 
-# (OPTIONAL FOR LATER): Link SFML to the executable
-# target_link_libraries(SignalScope sfml-graphics sfml-window sfml-system)
+# 2. Define your project's executable source files
+set(SOURCES 
+    src/main.cpp 
+    src/QuadTree.cpp 
+    src/KDTree.cpp 
+    src/MathUtils.cpp
+)
+add_executable(SignalScope ${SOURCES})
 
-# -----------------------------------------------------------------------
-# Standalone test target for the KD-Tree + RF math (Hitesh).
-# Builds ONLY the KD-Tree, math, and its test main -- no SFML/ImGui.
-# Build just this:  cmake --build . --target kdtree_test
-# -----------------------------------------------------------------------
-add_executable(kdtree_test
-    tests/kdtree_test.cpp
-    src/KDTree.cpp
-    src/MathUtils.cpp)
+# 3. Include your local header files folder
+target_include_directories(SignalScope PRIVATE include)
+
+# 4. Link SFML targets (Note: SFML 3 targets use a clean namespace style)
+target_link_libraries(SignalScope PRIVATE SFML::Graphics SFML::Window SFML::System)
