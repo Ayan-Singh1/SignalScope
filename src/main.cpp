@@ -195,7 +195,7 @@ int main() {
                       << "Network: " << nearestNode->radioType << "\n"
                       << "Distance: " << setprecision(2) << distKm << " km\n\n"
                       << "ALGORITHM METRICS\n"
-                      << "Search Time: " << (int)searchTimeUs << " ms\n\n"
+                      << "Search Time: " << (int)searchTimeUs << " us\n\n"
                       << "CONNECTION STATUS\n"
                       << "Strength: " << signalStatus << "\n"
                       << "Power: " << (int)signalStrength << " dBm";
