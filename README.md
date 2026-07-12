@@ -1,6 +1,6 @@
 # SignalScope
 
-**SignalScope** is a high-performance, interactive C++ application designed to visualize and analyze cell node coverage across 4 states within the Southeastern United States (Florida, Georgia, Alabama, and South Carolina). 
+**SignalScope** is an interactive C++ application designed to visualize and analyze cell node coverage across 4 states within the Southeastern United States (Florida, Georgia, Alabama, and South Carolina). 
 
 SignalScope uses real-world tower data to allow users to click anywhere on the map to instantly identify the nearest cell node, calculate real-world signal degradation, and determine if a location is a "Dead Zone" based on tower coverage.
 
@@ -9,15 +9,15 @@ The project serves as a performance benchmark between two advanced spatial data 
 ---
 
 ## Features
-* **Two Custom Spatial Algorithms:** Compares the microsecond search times of a QuadTree vs. a KD-Tree when querying a massive dataset.
+* **Two Custom Data Structure Algorithms:** Compares the microsecond search times of a QuadTree vs. a KD-Tree when querying a massive dataset (116k+ data points).
 * **Real-World Engineering Math:** Calculates distances using the **Haversine Formula** (accounting for Earth's curvature) and estimates signal strength (dBm) using the **Free-Space Path Loss (FSPL)** model.
 * **Dynamic Range & Line of Sight:** Evaluates network type (`LTE`, `GSM`, `5G`) to dynamically render accurate coverage radii. Automatically detects "Dead Zones" if a user is out of range.
 * **Interactive Graphical UI:** Built purely in C++ using the SFML multimedia library.
 
 ---
 
-## Dataset & Map Quirks (Please Read)
-This project utilizes the [OpenCelliD](https://opencellid.org/) database, containing well over **100,000+** real-world cell nodes for the selected states. 
+## Dataset & Map Quirks
+This project utilizes the [OpenCelliD](https://opencellid.org/) database, containing well over **116,000+** real-world cell nodes for the selected states. 
 
 **A note on accuracy and edge-cases:**
 1. **Maritime Nodes:** If you drop a pin in the middle of the Atlantic Ocean or Gulf of Mexico and it connects to a tower, this is *not a bug*. OpenCelliD tracks maritime cell nodes placed on buoys, oil rigs, and large cruise ships. 
@@ -38,7 +38,6 @@ brew install sfml
 ```bash
 pacman -S mingw-w64-x86_64-sfml
 ```
-*(Alternatively, use `vcpkg` or download the binaries directly from the SFML website).*
 
 **Linux (Debian/Ubuntu):**
 ```bash
@@ -88,7 +87,7 @@ Once SFML is installed on your machine, follow these steps to build the project 
 ---
 
 ## How to Use
-1. **Launch the App:** Wait a few seconds for the terminal to parse and load the 120,000+ CSV rows into the tree structures.
+1. **Launch the Executable:** Wait a few seconds for the terminal to parse and load the 116,000+ CSV rows into the tree structures.
 2. **Scan for Coverage:** Click anywhere on the map to drop a pin. The program will draw a line to the nearest tower and display a coverage radius.
 3. **Analyze Metrics:** Look at the right-hand panel to view the exact coordinate data, signal status (Excellent, Good, Weak, or DEAD ZONE), and the dBm power.
 4. **Compare Algorithms:** Click the "Algorithm" button in the UI panel to toggle between the **KD-Tree** and the **QuadTree**. Drop another pin and observe the difference in `Search Time (us)` to see which data structure performs spatial queries faster!
